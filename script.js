@@ -99,101 +99,96 @@ window.addEventListener('scroll', () => {
     });
 });
 
-// Combined cursor animation and snowfall
-function initializeAnimations() {
+// Snowfall Animation
+function createSnowflakes() {
     const container = document.querySelector('header');
     const containerWidth = container.offsetWidth;
-    const containerHeight = container.offsetHeight;
-    const maxSnowflakes = 30; // Adjusted number of snowflakes
+    const maxSnowflakes = 50; // Adjust number of snowflakes
 
-    // Create snowflake function
     function createSnowflake() {
         const snowflake = document.createElement('div');
         snowflake.className = 'snowflake';
         
-        // Random starting position across full width
+        // Random starting position
         const startX = Math.random() * containerWidth;
         // Random horizontal drift
-        const endX = startX + (Math.random() - 0.5) * 400; // Increased drift
+        const endX = startX + (Math.random() - 0.5) * 200;
         
         snowflake.style.left = `${startX}px`;
         snowflake.style.setProperty('--end-x', `${endX - startX}px`);
         
-        // Random size between 20px and 35px
-        const size = (Math.random() * 15 + 20);
+        // Random size
+        const size = (Math.random() * 15 + 5);
         snowflake.style.fontSize = `${size}px`;
         
-        // Slower duration for better visibility
-        const duration = (Math.random() * 4 + 6); // 6-10 seconds
+        // Random duration
+        const duration = (Math.random() * 3 + 2);
         snowflake.style.animation = `snowfall ${duration}s linear`;
         
         container.appendChild(snowflake);
         
-        // Remove and recreate snowflake after animation
+        // Remove snowflake after animation
         snowflake.addEventListener('animationend', () => {
             snowflake.remove();
-            createSnowflake();
+            createSnowflake(); // Create new snowflake to maintain constant number
         });
     }
 
-    // Initialize snowflakes
+    // Initial creation of snowflakes
     for (let i = 0; i < maxSnowflakes; i++) {
         setTimeout(() => {
             createSnowflake();
-        }, Math.random() * 3000);
+        }, Math.random() * 3000); // Stagger initial creation
     }
-
-    // Cursor particle effect
-    document.addEventListener('mousemove', (e) => {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        particle.style.left = `${e.clientX}px`;
-        particle.style.top = `${e.clientY}px`;
-        
-        const duration = 10 + Math.random() * 10;
-        particle.style.animation = `particleFall ${duration}s linear`;
-        
-        container.appendChild(particle);
-        
-        setTimeout(() => {
-            particle.remove();
-        }, duration * 1000);
-    });
-
-    // Click burst effect
-    document.addEventListener('click', (e) => {
-        for (let i = 0; i < 10; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            
-            const angle = (i / 10) * Math.PI * 2;
-            const radius = 20;
-            particle.style.left = `${e.clientX + Math.cos(angle) * radius}px`;
-            particle.style.top = `${e.clientY + Math.sin(angle) * radius}px`;
-            
-            const duration = 10 + Math.random() * 10;
-            particle.style.animation = `particleFall ${duration}s linear`;
-            
-            container.appendChild(particle);
-            
-            setTimeout(() => {
-                particle.remove();
-            }, duration * 1000);
-        }
-    });
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', initializeAnimations);
+// Initialize snowfall on page load
+document.addEventListener('DOMContentLoaded', () => {
+    createSnowflakes();
+});
 
-// Handle window resize
+// Adjust snowfall when window is resized
 let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
         const snowflakes = document.querySelectorAll('.snowflake');
         snowflakes.forEach(s => s.remove());
-        initializeAnimations();
+        createSnowflakes();
     }, 200);
+});
+
+// Mobile Menu Functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarClose = document.querySelector('.sidebar-close');
+    const body = document.body;
+
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    body.appendChild(overlay);
+
+    // Open sidebar
+    mobileMenuBtn.addEventListener('click', () => {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        body.style.overflow = 'hidden';
+    });
+
+    // Close sidebar
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        body.style.overflow = '';
+    }
+
+    sidebarClose.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar on link click
+    document.querySelectorAll('.sidebar-items a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
 });
