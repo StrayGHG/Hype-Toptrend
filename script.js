@@ -1,216 +1,180 @@
-// Add to cart functionality
-document.querySelectorAll('.add-to-cart').forEach(button => {
-    button.addEventListener('click', function() {
-        const product = this.parentElement;
-        const productName = product.querySelector('h3').textContent;
-        
-        // Animation for button
-        this.innerHTML = '✓ Added';
-        this.style.background = '#4CAF50';
-        
-        setTimeout(() => {
-            this.innerHTML = 'Add to Cart';
-            this.style.background = '#8a2be2';
-        }, 2000);
-        
-        // Alert user
-        alert(`${productName} has been added to your cart!`);
-    });
-});
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Update cart count on all pages
+    function updateCartCount() {
+        const cartCount = document.querySelectorAll('.cart-count');
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        cartCount.forEach(count => count.textContent = totalItems);
+    }
 
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
+    // Add to cart function
+    function addToCart(product, quantity) {
+        // Check if item already exists in cart
+        const existingItemIndex = cart.findIndex(item => 
+            item.name === product.name && 
+            item.price === product.price
+        );
+
+        if (existingItemIndex > -1) {
+            // Update quantity if item exists
+            cart[existingItemIndex].quantity += quantity;
+        } else {
+            // Add new item if it doesn't exist
+            const cartItem = {
+                id: Date.now(),
+                name: product.name,
+                price: parseFloat(product.price),
+                image: product.image,
+                quantity: quantity
+            };
+            cart.push(cartItem);
+        }
+
+        // Save to localStorage and update UI
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        showSuccessModal();
+    }
+
+    // Quick View Modal Handlers
+    const modal = document.querySelector('.quick-view-modal');
+    const closeBtn = document.querySelector('.close-modal');
+    const quickViewButtons = document.querySelectorAll('.quick-view');
+
+    function openModal(productCard) {
+        const productImage = productCard.querySelector('.product-image img').src;
+        const productName = productCard.querySelector('h3').textContent;
+        const productCategory = productCard.querySelector('.product-category').textContent;
+        const productPrice = productCard.querySelector('.product-price').textContent;
+
+        document.getElementById('modal-product-image').src = productImage;
+        document.getElementById('modal-product-name').textContent = productName;
+        document.getElementById('modal-product-category').textContent = productCategory;
+        document.getElementById('modal-product-price').textContent = productPrice;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Success Modal Handlers
+    const successModal = document.querySelector('.cart-success-modal');
+    
+    function showSuccessModal() {
+        successModal.classList.add('active');
+        setTimeout(() => {
+            document.addEventListener('click', closeSuccessModalOutside);
+        }, 100);
+    }
+
+    function closeSuccessModal() {
+        successModal.classList.remove('active');
+        document.removeEventListener('click', closeSuccessModalOutside);
+    }
+
+    function closeSuccessModalOutside(e) {
+        if (!successModal.contains(e.target)) {
+            closeSuccessModal();
+        }
+    }
+
+    // Event Listeners
+    quickViewButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const productCard = button.closest('.product-card');
+            openModal(productCard);
         });
     });
-});
 
-// Animation on scroll for products
-window.addEventListener('scroll', () => {
-    const products = document.querySelectorAll('.product-card');
-    
-    products.forEach(product => {
-        const productPosition = product.getBoundingClientRect().top;
-        const screenPosition = window.innerHeight;
-        
-        if(productPosition < screenPosition) {
-            product.style.opacity = '1';
-            product.style.transform = 'translateY(0)';
-        }
+    closeBtn?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
     });
-});
 
-// Add this to your existing script.js
-document.querySelectorAll('.category-tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-        // Remove active class from all tabs
-        document.querySelectorAll('.category-tab').forEach(t => 
-            t.classList.remove('active'));
-        
-        // Add active class to clicked tab
-        this.classList.add('active');
-        
-        // Here you would typically filter products
-        // For now, just add a visual feedback
-        const category = this.textContent;
-        if(category !== 'All') {
-            alert(`Showing ${category} category`);
-        }
+    // Quantity Selector in Quick View
+    const quantityInput = document.querySelector('.quantity-input');
+    const minusBtn = document.querySelector('.minus');
+    const plusBtn = document.querySelector('.plus');
+
+    minusBtn?.addEventListener('click', () => {
+        let value = parseInt(quantityInput.value);
+        if (value > 1) quantityInput.value = value - 1;
     });
-});
 
-// Enhanced parallax effect for hero section
-document.addEventListener('mousemove', (e) => {
-    const shapes = document.querySelectorAll('.shape');
-    const x = e.clientX / window.innerWidth;
-    const y = e.clientY / window.innerHeight;
-
-    shapes.forEach((shape, index) => {
-        const speed = (index + 1) * 0.5;
-        const moveX = (x * speed) * 50;
-        const moveY = (y * speed) * 50;
-        
-        // Different movement for different shape types
-        if (shape.classList.contains('circle')) {
-            shape.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${x * 360}deg)`;
-        } else if (shape.classList.contains('square')) {
-            shape.style.transform = `translate(${moveX}px, ${moveY}px) rotate(45deg) scale(${1 + x * 0.2})`;
-        } else if (shape.classList.contains('ring')) {
-            shape.style.transform = `translate(${moveX}px, ${moveY}px) scale(${1 + y * 0.2})`;
-        }
+    plusBtn?.addEventListener('click', () => {
+        let value = parseInt(quantityInput.value);
+        quantityInput.value = value + 1;
     });
-});
 
-// Add scroll reveal animation for sections
-window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section');
-    
-    sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        
-        if(sectionTop < windowHeight * 0.75) {
-            section.style.opacity = '1';
-            section.style.transform = 'translateY(0)';
-        }
+    // Add to Cart Button Handlers
+    const modalAddToCartBtn = document.querySelector('.modal-add-to-cart');
+    modalAddToCartBtn?.addEventListener('click', () => {
+        const productName = document.getElementById('modal-product-name').textContent;
+        const productPrice = document.getElementById('modal-product-price').textContent.replace('$', '');
+        const productImage = document.getElementById('modal-product-image').src;
+        const quantity = parseInt(document.querySelector('.quantity-input').value);
+
+        const product = {
+            name: productName,
+            price: productPrice,
+            image: productImage
+        };
+
+        addToCart(product, quantity);
     });
-});
 
-// Snowfall Animation
-function createSnowflakes() {
-    const container = document.querySelector('header');
-    const containerWidth = container.offsetWidth;
-    const maxSnowflakes = 50; // Adjust number of snowflakes
+    // Regular Add to Cart Buttons
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const productCard = button.closest('.product-card');
+            const productName = productCard.querySelector('h3').textContent;
+            const productPrice = productCard.querySelector('.product-price').textContent.replace('$', '');
+            const productImage = productCard.querySelector('img').src;
 
-    function createSnowflake() {
-        const snowflake = document.createElement('div');
-        snowflake.className = 'snowflake';
-        
-        // Random starting position
-        const startX = Math.random() * containerWidth;
-        // Random horizontal drift
-        const endX = startX + (Math.random() - 0.5) * 200;
-        
-        snowflake.style.left = `${startX}px`;
-        snowflake.style.setProperty('--end-x', `${endX - startX}px`);
-        
-        // Random size
-        const size = (Math.random() * 15 + 5);
-        snowflake.style.fontSize = `${size}px`;
-        
-        // Random duration
-        const duration = (Math.random() * 3 + 2);
-        snowflake.style.animation = `snowfall ${duration}s linear`;
-        
-        container.appendChild(snowflake);
-        
-        // Remove snowflake after animation
-        snowflake.addEventListener('animationend', () => {
-            snowflake.remove();
-            createSnowflake(); // Create new snowflake to maintain constant number
+            const product = {
+                name: productName,
+                price: productPrice,
+                image: productImage
+            };
+
+            addToCart(product, 1);
+        });
+    });
+
+    // Success Modal Button Handlers
+    const continueShoppingBtn = document.querySelector('.continue-shopping');
+    const goToCartBtn = document.querySelector('.go-to-cart');
+
+    continueShoppingBtn?.addEventListener('click', () => {
+        closeSuccessModal();
+        closeModal();
+    });
+
+    goToCartBtn?.addEventListener('click', () => {
+        window.location.href = 'cart.html';
+    });
+
+    // Initialize cart count on page load
+    updateCartCount();
+
+    // Add logout function
+    function logout() {
+        firebase.auth().signOut().then(() => {
+            // Clear local storage
+            localStorage.removeItem('cart');
+            // Redirect to login
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            console.error('Error signing out:', error);
         });
     }
-
-    // Initial creation of snowflakes
-    for (let i = 0; i < maxSnowflakes; i++) {
-        setTimeout(() => {
-            createSnowflake();
-        }, Math.random() * 3000); // Stagger initial creation
-    }
-}
-
-// Initialize snowfall on page load
-document.addEventListener('DOMContentLoaded', () => {
-    createSnowflakes();
-});
-
-// Adjust snowfall when window is resized
-let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        const snowflakes = document.querySelectorAll('.snowflake');
-        snowflakes.forEach(s => s.remove());
-        createSnowflakes();
-    }, 200);
-});
-
-// Mobile Menu Functionality
-document.addEventListener('DOMContentLoaded', () => {
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarClose = document.querySelector('.sidebar-close');
-    const body = document.body;
-
-    // Create overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    body.appendChild(overlay);
-
-    // Prevent touchmove on body when sidebar is open
-    function preventDefault(e) {
-        e.preventDefault();
-    }
-
-    // Open sidebar
-    mobileMenuBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
-        body.style.overflow = 'hidden';
-        // Prevent iOS bounce scroll
-        document.addEventListener('touchmove', preventDefault, { passive: false });
-    });
-
-    // Close sidebar
-    function closeSidebar() {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-        body.style.overflow = '';
-        // Re-enable scrolling
-        document.removeEventListener('touchmove', preventDefault);
-    }
-
-    sidebarClose.addEventListener('click', closeSidebar);
-    overlay.addEventListener('click', closeSidebar);
-
-    // Close sidebar on link click
-    document.querySelectorAll('.sidebar-items a').forEach(link => {
-        link.addEventListener('click', closeSidebar);
-    });
-
-    // Handle iOS swipe to close
-    let touchStartX = 0;
-    sidebar.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-
-    sidebar.addEventListener('touchmove', (e) => {
-        if (e.touches[0].clientX - touchStartX > 50) {
-            closeSidebar();
-        }
-    }, { passive: true });
 });

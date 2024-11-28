@@ -9,39 +9,21 @@
 </head>
 <body>
     <nav>
-        <div class="mobile-menu-btn">
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
         <div class="logo">
             <h1>Hype-Toptrend</h1>
         </div>
         <div class="nav-items">
-            <a href="#home">Home</a>
+            <a href="index.html">Home</a>
             <a href="products.html">Products</a>
             <a href="#contact">Contact</a>
-            <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+            <a href="cart.html" class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+            </a>
+            <a href="login.html" class="auth-button">Login</a>
         </div>
     </nav>
 
-<!-- Add this sidebar -->
-<div class="sidebar">
-    <div class="sidebar-close">&times;</div>
-    <div class="sidebar-content">
-        <div class="logo">
-            <h1>Hype-Toptrend</h1>
-        </div>
-        <div class="sidebar-items">
-            <a href="#home">Home</a>
-            <a href="products.html">Products</a>
-            <a href="#contact">Contact</a>
-            <a href="#cart"><i class="fas fa-shopping-cart"></i> Cart</a>
-        </div>
-    </div>
-</div>
 
     <header id="home">
         <div class="background-effects">
@@ -126,31 +108,53 @@
     </section>
 
     <section id="products">
-        <h2>Featured Products</h2>
-        <div class="category-tabs">
-            <button class="category-tab active">All</button>
-            <button class="category-tab">Hoodies</button>
-            <button class="category-tab">Sneakers</button>
-            <button class="category-tab">T-Shirts</button>
-        </div>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="Images/kenzo.png" alt="Kenzo Hoodie">
-                <h3>Trendy Hoodie</h3>
-                <p>$59.99</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="Images/NikeTN.webp" alt="Nike Tn I">
-                <h3>Designer Sneakers</h3>
-                <p>$89.99</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="Images/NikeTN3.webp" alt="Nike Tn III">
-                <h3>Premium T-Shirt</h3>
-                <p>$29.99</p>
-                <button class="add-to-cart">Add to Cart</button>
+        <div class="container">
+            <h2>Featured Products</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="Images/kenzo.png" alt="Kenzo Hoodie">
+                        <div class="product-overlay">
+                            <button class="quick-view">Quick View</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Kenzo Tiger Hoodie</h3>
+                        <div class="product-category">Hoodies</div>
+                        <div class="product-price">$299.99</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="Images/NikeTN.webp" alt="Nike TN">
+                        <div class="product-overlay">
+                            <button class="quick-view">Quick View</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Nike TN Air Max Plus</h3>
+                        <div class="product-category">Sneakers</div>
+                        <div class="product-price">$189.99</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="Images/NikeTN3.webp" alt="Nike TN III">
+                        <div class="product-overlay">
+                            <button class="quick-view">Quick View</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Nike TN III</h3>
+                        <div class="product-category">Sneakers</div>
+                        <div class="product-price">$199.99</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -173,6 +177,63 @@
         </div>
     </footer>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    
+    <!-- Your scripts -->
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
     <script src="script.js"></script>
+
+    <div class="quick-view-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="modal-grid">
+                <div class="modal-image">
+                    <img src="" alt="Product Image" id="modal-product-image">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-product-name"></h2>
+                    <div class="modal-category" id="modal-product-category"></div>
+                    <div class="modal-price" id="modal-product-price"></div>
+                    <div class="modal-description">
+                        <p>Experience ultimate comfort and style with this premium product. Made with high-quality materials and attention to detail.</p>
+                        <ul>
+                            <li>Premium quality materials</li>
+                            <li>Comfortable fit</li>
+                            <li>Durable construction</li>
+                            <li>Modern design</li>
+                        </ul>
+                    </div>
+                    <div class="modal-actions">
+                        <div class="quantity-selector">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" value="1" min="1" class="quantity-input">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="modal-add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to Cart Success Modal -->
+    <div class="cart-success-modal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Added to Cart!</h3>
+            <p>Item has been successfully added to your cart.</p>
+            <div class="success-buttons">
+                <button class="continue-shopping">Continue Shopping</button>
+                <button class="go-to-cart">Go to Cart</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
