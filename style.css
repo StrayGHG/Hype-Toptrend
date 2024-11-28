@@ -784,7 +784,6 @@ footer {
     display: none;
     cursor: pointer;
     z-index: 1000;
-    padding: 15px;
 }
 
 .hamburger {
@@ -835,11 +834,6 @@ footer {
 
 .sidebar-content {
     padding: 50px 30px;
-}
-
-.sidebar .logo h1 {
-    color: var(--white);
-    margin-bottom: 30px;
 }
 
 .sidebar-items {
