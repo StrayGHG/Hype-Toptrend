@@ -21,6 +21,7 @@ body {
 /* Navigation */
 nav {
     background: rgba(74, 21, 75, 0.95);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     padding: 1.2rem 5%;
     display: flex;
@@ -784,12 +785,18 @@ footer {
     display: none;
     cursor: pointer;
     z-index: 1000;
+    padding: 10px;
+    margin-left: -10px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .hamburger {
-    width: 30px;
+    width: 25px;
     height: 20px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .hamburger span {
@@ -797,26 +804,24 @@ footer {
     width: 100%;
     height: 2px;
     background: var(--white);
-    position: absolute;
-    transition: 0.3s ease;
+    border-radius: 2px;
 }
-
-.hamburger span:nth-child(1) { top: 0; }
-.hamburger span:nth-child(2) { top: 9px; }
-.hamburger span:nth-child(3) { top: 18px; }
 
 /* Sidebar */
 .sidebar {
     position: fixed;
     top: 0;
-    left: -300px;
-    width: 300px;
-    height: 100vh;
-    background: rgba(74, 21, 75, 0.95);
+    left: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100%;
+    background: rgba(74, 21, 75, 0.98);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     z-index: 1001;
     transition: 0.3s ease;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .sidebar.active {
@@ -882,7 +887,8 @@ footer {
     }
     
     .mobile-menu-btn {
-        display: block;
+        display: flex;
+        align-items: center;
         order: -1;
     }
     
@@ -891,9 +897,41 @@ footer {
         justify-content: space-between;
         align-items: center;
         padding: 1rem 5%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
     }
 
     .logo {
         margin: 0 auto;
+        padding-right: 44px;
+    }
+    
+    body {
+        padding-top: 60px;
+    }
+    
+    .sidebar-content {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Fix for iOS safe areas */
+@supports (padding-top: env(safe-area-inset-top)) {
+    nav {
+        padding-top: max(1rem, env(safe-area-inset-top));
+    }
+    
+    .sidebar {
+        padding-top: env(safe-area-inset-top);
+        height: 100vh;
+        height: -webkit-fill-available;
+    }
+    
+    body {
+        padding-top: calc(60px + env(safe-area-inset-top));
     }
 }

@@ -170,11 +170,19 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.className = 'overlay';
     body.appendChild(overlay);
 
+    // Prevent touchmove on body when sidebar is open
+    function preventDefault(e) {
+        e.preventDefault();
+    }
+
     // Open sidebar
-    mobileMenuBtn.addEventListener('click', () => {
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         sidebar.classList.add('active');
         overlay.classList.add('active');
         body.style.overflow = 'hidden';
+        // Prevent iOS bounce scroll
+        document.addEventListener('touchmove', preventDefault, { passive: false });
     });
 
     // Close sidebar
@@ -182,6 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
         body.style.overflow = '';
+        // Re-enable scrolling
+        document.removeEventListener('touchmove', preventDefault);
     }
 
     sidebarClose.addEventListener('click', closeSidebar);
@@ -191,4 +201,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.sidebar-items a').forEach(link => {
         link.addEventListener('click', closeSidebar);
     });
+
+    // Handle iOS swipe to close
+    let touchStartX = 0;
+    sidebar.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    sidebar.addEventListener('touchmove', (e) => {
+        if (e.touches[0].clientX - touchStartX > 50) {
+            closeSidebar();
+        }
+    }, { passive: true });
 });
