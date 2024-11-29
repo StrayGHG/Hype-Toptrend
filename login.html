@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Login | Hype-Toptrend</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="login.css">
@@ -23,16 +23,23 @@
         <div class="logo">
             <h1>Hype-Toptrend</h1>
         </div>
+        
         <div class="nav-items">
             <a href="index.html">Home</a>
             <a href="products.html">Products</a>
-            <a href="#contact">Contact</a>
-            <a href="cart.html" class="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count">0</span>
-            </a>
+            <a href="cart.html">Cart</a>
+            <a href="login.html">Login</a>
+        </div>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </nav>
+
+    <!-- Add this right after your nav element -->
+    <div class="mobile-overlay"></div>
 
     <!-- Login/Register Container -->
     <div class="auth-container">
@@ -129,5 +136,20 @@
             <button class="continue-shopping">Continue Shopping</button>
         </div>
     </div>
+
+    <!-- Mobile Menu Modal -->
+    <div class="mobile-menu-modal">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-close">×</div>
+            <div class="mobile-menu-items">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
+                <a href="login.html" class="mobile-auth-item">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="mobileMenu.js"></script>
 </body>
 </html> 

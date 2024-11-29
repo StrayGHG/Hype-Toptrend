@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Shopping Cart | Hype-Toptrend</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="cart.css">
@@ -22,18 +22,35 @@
         <div class="logo">
             <h1>Hype-Toptrend</h1>
         </div>
+        
         <div class="nav-items">
             <a href="index.html">Home</a>
             <a href="products.html">Products</a>
-            <a href="#contact">Contact</a>
-            <a href="cart.html" class="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count">0</span>
-            </a>
+            <a href="cart.html">Cart</a>
+            <a href="login.html">Login</a>
+        </div>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </nav>
     
-    
+    <div class="mobile-overlay"></div>
+
+    <!-- Mobile Menu Modal -->
+    <div class="mobile-menu-modal">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-close">×</div>
+            <div class="mobile-menu-items">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
+                <a href="login.html" class="mobile-auth-item">Login</a>
+            </div>
+        </div>
+    </div>
 
     <main class="cart-container">
         <h2>Your Shopping Cart</h2>
@@ -67,6 +84,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     
     <!-- Your scripts -->
+    <script src="mobileMenu.js"></script>
     <script src="firebase-config.js"></script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
